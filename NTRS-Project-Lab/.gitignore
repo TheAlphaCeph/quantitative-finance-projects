@@ -1,0 +1,6 @@
+data/prelim_fundamental_dataset.csv
+data/full_fundamental_dataset.csv
+data/monthly_dataset.csv
+data/monthly_dataset.parquet
+results
+full_results
