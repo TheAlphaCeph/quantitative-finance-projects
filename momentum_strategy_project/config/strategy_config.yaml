@@ -1,0 +1,91 @@
+# Momentum Strategy Configuration
+
+# Signal Construction
+signals:
+  # Component weights (must sum to 1.0)
+  price_weight: 0.40
+  sentiment_weight: 0.35
+  frog_weight: 0.25
+  
+  # Price momentum parameters
+  price_lookback: 252  # 12 months
+  price_skip: 21  # Skip recent month
+  
+  # Sentiment momentum parameters
+  sentiment_lookback: 126  # 6 months
+  
+  # Cross-sectional normalization
+  normalize_cross_section: true
+
+# Frog-in-the-Pan Detection
+frog_detector:
+  gradual_window: 63  # 3 months
+  sudden_threshold: 2.0  # Standard deviations
+  min_persistence: 126  # 6 months validation
+  volatility_window: 252  # 1 year
+  trend_consistency: 0.60  # 60% monotonicity required
+  min_cumulative_change: 0.10  # 10% absolute change
+
+# Portfolio Construction
+portfolio:
+  rebalance_frequency: "monthly"  # monthly, weekly, daily
+  max_positions: 50  # Long positions
+  min_position_size: 0.01  # 1% minimum weight
+  max_position_size: 0.05  # 5% maximum weight
+  long_only: true
+  
+# Transaction Costs
+costs:
+  commission_bps: 10  # 10 basis points per trade
+  market_impact_bps: 5  # 5 bps for liquidity impact
+  
+# Risk Management
+risk:
+  max_leverage: 1.0  # Long-only, no leverage
+  max_sector_concentration: 0.30  # 30% max per sector
+  max_single_stock: 0.05  # 5% max per stock
+  
+# Backtesting
+backtest:
+  start_date: "2010-01-01"
+  end_date: "2024-12-31"
+  initial_capital: 10000000  # $10M
+  benchmark: "CRSP_VW"  # Value-weighted market
+  
+# Universe
+universe:
+  index: "russell_3000"  # Russell 3000
+  min_market_cap: 1000000000  # $1B minimum
+  min_liquidity: 5000000  # $5M average daily volume
+  
+# Factor Analysis
+factors:
+  model: "fama_french_3"  # 3-factor model
+  frequency: "daily"
+  
+# Validation
+validation:
+  bootstrap_iterations: 1000
+  block_length: 21  # 1 month blocks
+  confidence_level: 0.95
+  random_state: 66  # For reproducibility
+  n_jobs: -1  # Use all CPU cores
+  
+# Optimization
+optimization:
+  parameter_grid:
+    price_weight: [0.30, 0.40, 0.50]
+    sentiment_weight: [0.25, 0.35, 0.45]
+    frog_weight: [0.15, 0.25, 0.35]
+    gradual_window: [42, 63, 84]  # 2, 3, 4 months
+    sudden_threshold: [1.5, 2.0, 2.5]
+  
+  cv_method: "walk_forward"
+  min_train_years: 3
+  test_period_years: 1
+  
+# Logging
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  format: "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | {message}"
+  file: "logs/strategy.log"
